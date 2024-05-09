@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">LearnEnglishApp</string>
+    <string name="dictionary">Словарь</string>
+    <string name="repeat">Повторить</string>
+    <string name="learned">Выученные</string>
+    <string name="english">Английский</string>
+    <string name="russian">Русский</string>
+    <string name="logo">Logo</string>
+    <string name="for_beginners">для начинающих</string>
+    <string name="middle_level">средний уровень</string>
+    <string name="advance_level">продвинутый уровень</string>
+    <string name="text">Текст</string>
+    <string name="top_3000">ТОП 3000</string>
+    <string name="your_own_list">Свой список</string>
+    <string name="push_words">Push Words</string>
+    <string name="top">ТОП</string>
+    <string name="_3000">3000</string>
+</resources>
