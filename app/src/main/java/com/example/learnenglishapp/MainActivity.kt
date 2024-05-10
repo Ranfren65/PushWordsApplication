@@ -10,6 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.learnenglishapp.presentation.ui.screen.maindictionary.AddNewWordsScreen
+import com.example.learnenglishapp.presentation.ui.screen.maindictionary.ForBeginnersScreen
+import com.example.learnenglishapp.presentation.ui.screen.maindictionary.MainScreen
+import com.example.learnenglishapp.presentation.ui.screen.maindictionary.YourListScreen
 import com.example.learnenglishapp.presentation.ui.theme.LearnEnglishAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,7 +21,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LearnEnglishAppTheme {
-
+                AddNewWordsScreen()
             }
         }
     }

@@ -11,4 +11,6 @@
     <color name="green_200">#9DD47F</color>
     <color name="blue_200">#8FC7E5</color>
     <color name="yellow_200">#D7CF7F</color>
+    <color name="appGreen">#98E27F</color>
+    <color name="lightLightGray">#E3E2E2</color>
 </resources>
