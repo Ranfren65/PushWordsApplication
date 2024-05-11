@@ -1,4 +1,4 @@
-package com.example.learnenglishapp.presentation.ui.screen.maindictionary
+package com.example.learnenglishapp.presentation.ui.screen.main
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -23,11 +23,12 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,7 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learnenglishapp.R
 import com.example.learnenglishapp.data.model.BottomNavItem
-import com.example.learnenglishapp.data.model.CategoryCard
+import com.example.learnenglishapp.data.model.Category
 
 @Composable
 fun MainScreen(
@@ -120,8 +121,7 @@ private fun WordsTextField(
 @Composable
 private fun CategoryCardItem(
     modifier: Modifier = Modifier,
-    categoryCard: CategoryCard,
-    index: Int,
+    category: Category,
     onCategoryCardClick: () -> Unit,
 ) {
     val defaultShapeRadius = 6.dp
@@ -136,7 +136,7 @@ private fun CategoryCardItem(
             defaultShapeRadius
         ),
         colors = CardDefaults.cardColors(
-            containerColor = colorResource(categoryCard.colorId)
+            containerColor = colorResource(category.colorId)
         ),
 
         ) {
@@ -145,12 +145,12 @@ private fun CategoryCardItem(
         )
         {
             Image(
-                painter = painterResource(id = categoryCard.iconId),
+                painter = painterResource(id = category.iconId),
                 contentDescription = "",
                 Modifier
                     .padding(3.dp)
             )
-            if (!categoryCard.inProgress) {
+            if (!category.inProgress) {
                 Icon(
                     modifier = Modifier
                         .size(50.dp)
@@ -174,11 +174,11 @@ private fun CategoryCardItem(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
             ) {
-                if (categoryCard.subtitleId == null) {
+                if (category.subtitleId == null) {
                     Text(
                         fontSize = 28.sp,
                         color = Color.White,
-                        text = stringResource(id = categoryCard.titleId),
+                        text = stringResource(id = category.titleId),
                     )
                 } else {
                     Row {
@@ -202,7 +202,7 @@ private fun CategoryCardItem(
                         modifier = Modifier.padding(bottom = 7.dp),
                         fontSize = 14.sp,
                         color = Color.White,
-                        text = stringResource(id = categoryCard.subtitleId),
+                        text = stringResource(id = category.subtitleId),
                     )
                 }
             }
@@ -215,40 +215,24 @@ private fun CategoryGroup(
     modifier: Modifier = Modifier,
     onCategoryCardClick: () -> Unit,
 ) {
-    val items = listOf(
-        CategoryCard(
-            iconId = R.drawable.beginner,
-            titleId = R.string.top_3000,
-            subtitleId = R.string.for_beginners,
-            colorId = R.color.green_200,
-        ),
-        CategoryCard(
-            iconId = R.drawable.middle,
-            titleId = R.string.top_3000,
-            subtitleId = R.string.middle_level,
-            colorId = R.color.blue_200,
-            inProgress = true,
-        ),
-        CategoryCard(
-            iconId = R.drawable.advanced,
-            titleId = R.string.top_3000,
-            subtitleId = R.string.advance_level,
-            colorId = R.color.yellow_200,
-        ),
-        CategoryCard(
-            iconId = R.drawable.books,
-            titleId = R.string.your_own_list,
-            colorId = R.color.gray_200,
-        )
+    val forBeginners = Category.ForBeginners
+    val forIntermediate = Category.ForIntermediate
+    val forAdvanced = Category.ForAdvanced
+    val myOwnList = Category.MyOwnList
+
+    val categories = listOf(
+        forBeginners,
+        forIntermediate,
+        forAdvanced,
+        myOwnList,
     )
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        items.forEachIndexed { index, categoryCard ->
+        for (category in categories) {
             CategoryCardItem(
-                categoryCard = categoryCard,
-                index = index,
+                category = category,
                 onCategoryCardClick = onCategoryCardClick,
             )
 
@@ -285,15 +269,22 @@ private fun BottomBar(
             hasBadge = false,
         ),
     )
-    NavigationBar {
+    NavigationBar(
+        containerColor = Color.Transparent,
+    ) {
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                modifier = Modifier.padding(bottom = 25.dp),
                 selected = selectedItemIndex == index,
                 onClick = {
                     selectedItemIndex = index
 
                 },
+                colors = NavigationBarItemDefaults.colors(
+                    unselectedIconColor = Color.Black,
+                    selectedIconColor = Color.Black,
+                    unselectedTextColor = Color.Gray,
+                    indicatorColor = MaterialTheme.colorScheme.background
+                ),
                 label = {
                     Text(
                         text = stringResource(id = item.titleId),
@@ -310,7 +301,7 @@ private fun BottomBar(
                         }
                     ) {
                         Icon(
-                            modifier = Modifier.size(35.dp),
+                            modifier = Modifier.size(30.dp),
                             painter = painterResource(id = item.iconId),
                             contentDescription = stringResource(id = item.titleId)
                         )
