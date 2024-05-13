@@ -310,6 +310,7 @@ private fun CategoryGroup(
                 label = {
                     Text(
                         text = stringResource(id = item.titleId),
+                        fontSize = 15.sp
                     )
                 },
                 icon = {

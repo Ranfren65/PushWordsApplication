@@ -12,14 +12,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -35,45 +43,54 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnenglishapp.R
-
+import com.example.learnenglishapp.data.model.MyViewModel
+import com.example.learnenglishapp.data.model.chipsWords
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun AddNewWordsScreen() {
+fun AddNewWordsScreen(
+
+) {
     Scaffold(
         topBar = {
             TopBarAddWords(backButtonAddWord = {},
                            closeAddWordScreen = {})
-        },
-        bottomBar = { BottomBar() }
-
-    ) {
-        AddWords(value = "Поиск") {
-
         }
+    ) {
+        AddWords()
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarAddWords(
+private fun TopBarAddWords(
     backButtonAddWord: () -> Unit,
     closeAddWordScreen: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(text = "Добавление новых слов") },
+        title = {
+            Text(
+                text = stringResource(R.string.add_new_words),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
         navigationIcon = {
             IconButton(onClick = backButtonAddWord) {
                 Icon(
-                    painter = painterResource(id = R.drawable.backbutton),
+                    painter = painterResource(id = R.drawable.vector),
                     contentDescription = "back",
-                    tint = Color.Black,
-                    modifier = Modifier.size(25.dp)
+                    modifier = Modifier.size(20.dp)
+
                 )
             }
         },
@@ -81,7 +98,9 @@ fun TopBarAddWords(
             IconButton(onClick = closeAddWordScreen) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Close"
+                    contentDescription = "Close",
+                    tint = Color.Black,
+                    modifier = Modifier.size(30.dp)
                 )
             }
         }
@@ -89,15 +108,23 @@ fun TopBarAddWords(
 }
 
 @Composable
-fun AddWords(
-    value: String,
-    onValueChange: (String) -> Unit
+private fun AddWords(
+
+    vm: MyViewModel = viewModel()
 ) {
-    val eng: String = "Английский"
-    val rus: String = "Русский"
+    var less by remember {
+        mutableStateOf(true)
+    }
+    var eng by remember {
+        mutableStateOf("Английский")
+    }
+    val rus by remember {
+        mutableStateOf("Русский")
+    }
     var serch by remember {
         mutableStateOf("")
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -105,90 +132,166 @@ fun AddWords(
 
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
-                    .padding(start = 20.dp, end = 20.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp, end = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 20.dp, end = 20.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(text = eng)
-                IconButton(onClick = { /*TODO*/ }) {
+                Box(
+                    modifier = Modifier.weight(0.4f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (less) {
+                        Text(
+                            text = eng,
+                            fontSize = 20.sp
+                        )
+                    } else {
+                        Text(
+                            text = rus,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+
+                IconButton(
+                    modifier = Modifier.weight(0.2f),
+                    onClick = {
+                        less = !less
+                    }) {
                     Icon(
                         painter = painterResource(id = R.drawable.swap),
                         modifier = Modifier.size(35.dp),
                         contentDescription = null
                     )
                 }
-                Text(text = rus)
+                Box(
+                    modifier = Modifier.weight(0.4f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (less) {
+                        Text(
+                            text = rus,
+                            fontSize = 20.sp
+                        )
+                    } else {
+                        Text(
+                            text = eng,
+                            fontSize = 20.sp
+                        )
+                    }
+                }
             }
+
             TextField(
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
-                    .background(colorResource(id = R.color.lightLightGray))
+                    .background(colorResource(id = R.color.background_field))
                     .fillMaxWidth()
                     .height(100.dp),
                 value = serch,
                 onValueChange = { serch = it },
-                placeholder = { Text(text = "Поиск") },
+                placeholder = { Text(text = stringResource(R.string.search)) },
                 trailingIcon = {
                     if (serch.isNotEmpty())
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(
+                            onClick = { /*TODO*/ }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.vocal),
+                                painter = painterResource(id = R.drawable.vocalize),
                                 contentDescription = "vocalize",
+                                tint = Color.Black,
                                 modifier = Modifier.size(25.dp)
                             )
                         }
                 })
+
             Spacer(modifier = Modifier.height(25.dp))
-            Text(modifier = Modifier.fillMaxWidth(),
+            Text(
+                modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Start,
-                text = "Выберите основной перевод:",
-                fontWeight = FontWeight.Bold
+                text = stringResource(R.string.select_translation),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(25.dp))
-            ChipsWord()
-            Spacer(modifier = Modifier.height(25.dp))
-            Text(modifier = Modifier.fillMaxWidth(),
-                 textAlign = TextAlign.Start,
-                text = "Примеры",
-                fontStyle = FontStyle.Italic
+            Chips(
+                chip = vm.items
             )
             Spacer(modifier = Modifier.height(25.dp))
-            Text(modifier = Modifier.fillMaxWidth(),
-                 textAlign = TextAlign.Start,
-                 text = "Apple")
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+                text = stringResource(R.string.examples),
+                fontStyle = FontStyle.Italic,
+                color = Color.Gray,
+                fontSize = 18.sp
+            )
             Spacer(modifier = Modifier.height(25.dp))
-            Text(modifier = Modifier.fillMaxWidth(),
-                 textAlign = TextAlign.Start,
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
+                text = "Apple"
+            )
+            Spacer(modifier = Modifier.height(25.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Start,
                 text = "Яблоко",
                 fontStyle = FontStyle.Italic
             )
             Spacer(modifier = Modifier.height(25.dp))
-            Button(
-                modifier = Modifier
-                    .padding(start = 30.dp, end = 30.dp)
-                    .fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.appGreen),
-                    contentColor = Color.Black
+            Button(modifier = Modifier
+                .padding(start = 30.dp, end = 30.dp)
+                .fillMaxWidth(),
+                   shape = RoundedCornerShape(10.dp),
+                   colors = ButtonDefaults.buttonColors(
+                       containerColor = colorResource(id = R.color.button_green),
+                       disabledContainerColor = Color.Gray,
+                       contentColor = Color.Black
 
-                ),
+                   ),
 
-
-                onClick = { /*TODO*/ }) {
-                Text(text = "Добавить в список")
+                   onClick = { /*TODO*/ }) {
+                Text(text = stringResource(R.string.add_tolist))
             }
 
         }
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChipsWord() {
-    Text(text = "Тут будут чипсы")
+private fun Chips(
+    vm: MyViewModel = viewModel(),
+    chip: List<chipsWords>
+) {
+    LazyRow {
+        items(chip) {
+            InputChip(
+                modifier = Modifier
+                    .width(50.dp)
+                    .height(20.dp),
+                selected = vm.indexChips == it,
+                onClick = {
+                    vm.indexChips = it
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = colorResource(id = R.color.yellow_),
+                    disabledContainerColor = colorResource(id = R.color.background_chips),
+
+                    ),
+                label = { Text(text = it.chip) })
+        }
+    }
 }
+
+

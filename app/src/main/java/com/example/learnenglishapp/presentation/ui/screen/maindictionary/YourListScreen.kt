@@ -17,13 +17,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnenglishapp.R
+import com.example.learnenglishapp.data.model.MyViewModel
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun YourListScreen() {
+fun YourListScreen(vm: MyViewModel = viewModel()) {
     Scaffold(
         topBar = {
             TopBarYourList(
@@ -35,7 +39,9 @@ fun YourListScreen() {
 
     ) {
         Column {
-            ListsWords()
+            ListsWords(
+                listWord = vm.listWords
+            )
         }
 
     }
@@ -43,19 +49,26 @@ fun YourListScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarYourList(
+private fun TopBarYourList(
     backButtonYourList: () -> Unit,
     addWordButton: () -> Unit
 ) {
     TopAppBar(
-        title = { Text(text = stringResource(id = R.string.your_own_list)) },
+        title = {
+            Text(
+                text = stringResource(id = R.string.your_own_list),
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold
+            )
+        },
         navigationIcon = {
             IconButton(onClick = backButtonYourList) {
                 Icon(
-                    painter = painterResource(id = R.drawable.backbutton),
+                    painter = painterResource(id = R.drawable.vector),
                     contentDescription = "back",
                     tint = Color.Black,
-                    modifier = Modifier.size(25.dp)
+                    modifier = Modifier.size(20.dp)
+
                 )
             }
         },
