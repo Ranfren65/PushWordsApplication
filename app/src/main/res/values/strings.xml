@@ -15,4 +15,7 @@
     <string name="push_words">Push Words</string>
     <string name="top">ТОП</string>
     <string name="_3000">3000</string>
+    <string name="examples">Примеры:</string>
+    <string name="settings">Настройки</string>
+    <string name="payment_under_restrictions">Оплата в условиях ограничений</string>
 </resources>

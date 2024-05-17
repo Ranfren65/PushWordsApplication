@@ -16,24 +16,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Badge
-import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -46,8 +35,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.learnenglishapp.R
-import com.example.learnenglishapp.data.model.BottomNavItem
 import com.example.learnenglishapp.data.model.Category
+import com.example.learnenglishapp.presentation.ui.components.AppBottomBar
 
 @Composable
 fun MainScreen(
@@ -71,7 +60,7 @@ private fun MainScreenContent(
                 onSettingsButtonClick = onSettingsButtonClick
             )
         },
-        bottomBar = { BottomBar() }
+        bottomBar = { AppBottomBar() }
     ) { innerPadding ->
         Box(
             Modifier
@@ -242,77 +231,6 @@ private fun CategoryGroup(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BottomBar(
-    modifier: Modifier = Modifier,
-
-    ) {
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
-    val items = listOf(
-        BottomNavItem(
-            iconId = R.drawable.book,
-            titleId = R.string.dictionary,
-            hasBadge = false,
-        ),
-        BottomNavItem(
-            iconId = R.drawable.notification,
-            titleId = R.string.repeat,
-            hasBadge = true,
-            badgeCount = 150,
-        ),
-        BottomNavItem(
-            iconId = R.drawable.tick,
-            titleId = R.string.learned,
-            hasBadge = false,
-        ),
-    )
-    NavigationBar(
-        containerColor = Color.Transparent,
-    ) {
-        items.forEachIndexed { index, item ->
-            NavigationBarItem(
-                selected = selectedItemIndex == index,
-                onClick = {
-                    selectedItemIndex = index
-
-                },
-                colors = NavigationBarItemDefaults.colors(
-                    unselectedIconColor = Color.Black,
-                    selectedIconColor = Color.Black,
-                    unselectedTextColor = Color.Gray,
-                    indicatorColor = MaterialTheme.colorScheme.background
-                ),
-                label = {
-                    Text(
-                        text = stringResource(id = item.titleId),
-                    )
-                },
-                icon = {
-                    BadgedBox(
-                        badge = {
-                            if (item.badgeCount != null) {
-                                Badge {
-                                    Text(text = item.badgeCount.toString())
-                                }
-                            }
-                        }
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(30.dp),
-                            painter = painterResource(id = item.iconId),
-                            contentDescription = stringResource(id = item.titleId)
-                        )
-                    }
-                }
-            )
-        }
-    }
-
-}
-
 @Composable
 private fun TopBar(
     modifier: Modifier = Modifier,
@@ -390,5 +308,5 @@ private fun MainScreenPreview(
 private fun BottomBarPreview(
     modifier: Modifier = Modifier,
 ) {
-    BottomBar()
+    AppBottomBar()
 }
