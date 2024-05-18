@@ -1,6 +1,7 @@
 package com.example.learnenglishapp.presentation.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnenglishapp.R
+import com.example.learnenglishapp.data.model.Events
 import com.example.learnenglishapp.data.model.ListWords
 import com.example.learnenglishapp.data.model.MyViewModel
 
@@ -35,8 +37,10 @@ import com.example.learnenglishapp.data.model.MyViewModel
 @Composable
 fun WordCard(
     listWords: ListWords,
-    checkClickButton: () -> Unit
+    vm: MyViewModel = viewModel(),
+    onEvent:(Events)->Unit
 ) {
+
     var playButton by remember {
         mutableStateOf(false)
     }
@@ -50,6 +54,7 @@ fun WordCard(
                 if (playButton) colorResource(id = R.color.lightLightGray)
                 else Color.Transparent
             )
+            .clickable { }
     ) {
         Row(
             modifier = Modifier
@@ -68,9 +73,9 @@ fun WordCard(
                 textAlign = TextAlign.Center,
                 text = listWords.russianWord
             )
-            IconButton(onClick = {
-                playButton = !playButton
-            }) {
+            IconButton(onClick =
+                       { playButton = !playButton }
+            ) {
                 if (playButton) {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
@@ -85,12 +90,12 @@ fun WordCard(
                 }
             }
             IconButton(onClick = {
-                checkClickButton()
+                onEvent(Events.onClickCheck(clickCheck = !checkSelected))
                 checkSelected = !checkSelected
             }
 
             ) {
-                if (checkSelected&&!playButton) {
+                if (checkSelected && !playButton) {
                     Icon(
                         imageVector = Icons.Outlined.Done,
                         tint = Color.Green,

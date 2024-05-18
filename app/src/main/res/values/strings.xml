@@ -20,4 +20,11 @@
     <string name="select_translation">Выберите основной перевод:</string>
     <string name="examples">Примеры:</string>
     <string name="add_tolist">Добавить в список</string>
+    <string name="you_repeat_all">" Вы повторили все слова"</string>
+    <string name="good_job">" Good job! 👍🏻"</string>
+    <string name="close">Закрыть</string>
+    <string name="no_words_repeat">Нет слов для повторения</string>
+    <string name="remember">Помню</string>
+    <string name="forgot">Забыл</string>
+    <string name="add_learning">Добавлено в выученное</string>
 </resources>

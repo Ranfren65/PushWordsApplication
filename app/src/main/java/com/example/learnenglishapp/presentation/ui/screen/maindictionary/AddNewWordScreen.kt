@@ -16,6 +16,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,6 +44,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -54,6 +58,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.learnenglishapp.R
 import com.example.learnenglishapp.data.model.MyViewModel
 import com.example.learnenglishapp.data.model.chipsWords
+import com.example.learnenglishapp.presentation.ui.components.Chips
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -76,6 +81,8 @@ private fun TopBarAddWords(
     backButtonAddWord: () -> Unit,
     closeAddWordScreen: () -> Unit
 ) {
+
+
     TopAppBar(
         title = {
             Text(
@@ -124,6 +131,8 @@ private fun AddWords(
     var serch by remember {
         mutableStateOf("")
     }
+    val state = vm.state.value
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier
@@ -197,11 +206,11 @@ private fun AddWords(
                     .background(colorResource(id = R.color.background_field))
                     .fillMaxWidth()
                     .height(100.dp),
-                value = serch,
-                onValueChange = { serch = it },
+                value = state.textToBeTranslated,
+                onValueChange = { vm.onTextToBeTranslatedChange(it) },
                 placeholder = { Text(text = stringResource(R.string.search)) },
                 trailingIcon = {
-                    if (serch.isNotEmpty())
+                    if (state.textToBeTranslated.isNotEmpty())
                         IconButton(
                             onClick = { /*TODO*/ }) {
                             Icon(
@@ -212,7 +221,12 @@ private fun AddWords(
                             )
                         }
                 })
-
+            if (state.textToBeTranslated.isNotEmpty()){
+                vm.onTranslateButtonClick(
+                    text = state.textToBeTranslated,
+                    context = context
+                )
+            }
             Spacer(modifier = Modifier.height(25.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -222,9 +236,7 @@ private fun AddWords(
                 fontSize = 18.sp
             )
             Spacer(modifier = Modifier.height(25.dp))
-            Chips(
-                chip = vm.items
-            )
+            ListChips()
             Spacer(modifier = Modifier.height(25.dp))
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -270,28 +282,29 @@ private fun AddWords(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Chips(
-    vm: MyViewModel = viewModel(),
-    chip: List<chipsWords>
-) {
-    LazyRow {
-        items(chip) {
-            InputChip(
-                modifier = Modifier
-                    .width(50.dp)
-                    .height(20.dp),
-                selected = vm.indexChips == it,
-                onClick = {
-                    vm.indexChips = it
-                },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = colorResource(id = R.color.yellow_),
-                    disabledContainerColor = colorResource(id = R.color.background_chips),
+private fun ListChips(
+    vm: MyViewModel = viewModel()
+) {val state = vm.state.value
+    LazyHorizontalGrid(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        rows = GridCells.Fixed(3)
+    ) {
 
-                    ),
-                label = { Text(text = it.chip) })
+            item {
+                Chips(selected = true,
+                      onClick = { },
+                    text = state.translatedText ,
+                    colorSelected = colorResource(id = R.color.yellow_),
+                    colorDisabled = colorResource(id = R.color.background_chips),
+                    containerColor = Color.Transparent
+                )
+
+
         }
     }
 }
+
 
 

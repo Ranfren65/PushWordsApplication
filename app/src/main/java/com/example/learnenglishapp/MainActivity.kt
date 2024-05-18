@@ -13,7 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.learnenglishapp.presentation.ui.screen.maindictionary.AddNewWordsScreen
 import com.example.learnenglishapp.presentation.ui.screen.maindictionary.ForBeginnersScreen
 import com.example.learnenglishapp.presentation.ui.screen.maindictionary.MainScreen
+import com.example.learnenglishapp.presentation.ui.screen.maindictionary.WordInf
 import com.example.learnenglishapp.presentation.ui.screen.maindictionary.YourListScreen
+import com.example.learnenglishapp.presentation.ui.screen.repeatList.RepeatScreen
 import com.example.learnenglishapp.presentation.ui.theme.LearnEnglishAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +23,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             LearnEnglishAppTheme {
-                ForBeginnersScreen()
+               YourListScreen()
             }
         }
     }
